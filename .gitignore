@@ -1,0 +1,26 @@
+# Rust build artifacts
+/target/
+Cargo.lock
+
+# Test data
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+
+# Output files
+*_length_quality.txt
+*_results.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log

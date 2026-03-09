@@ -1,0 +1,32 @@
+[package]
+name = "nano_extract"
+version = "1.0.0"
+edition = "2021"
+description = "Fast Nanopore FASTQ length/quality extractor - Rust port of Nano_Extract V3.8"
+
+[[bin]]
+name = "nano_extract"
+path = "src/main.rs"
+
+[dependencies]
+# CLI argument parsing
+clap = { version = "4", features = ["derive"] }
+
+# Parallel processing
+rayon = "1.10"
+
+# Gzip decompression (native, no external binary needed)
+flate2 = { version = "1.0", features = ["zlib-ng"], default-features = false }
+
+# Progress bar
+indicatif = "0.17"
+
+# Fast I/O
+memchr = "2"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
