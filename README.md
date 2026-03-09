@@ -146,3 +146,14 @@ The original Python script `Nano_Extract.V3.8.py` is included in this repository
 ## License
 
 MIT — see [LICENSE](LICENSE)
+
+
+---
+
+## Acknowledgements
+
+I need to thank al my great colleagues @ PGTB https://pgtb.fr/ and INRAe
+I also want to thank [Claude ](https://claude.ai/) !
+
+
+
