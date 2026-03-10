@@ -1,159 +1,95 @@
-# nano_extract
+# nano_extract v2.0.0
 
-[![CI](https://github.com/papaKarN/nano_extract/actions/workflows/ci.yml/badge.svg)](https://github.com/papaKarN/nano_extract/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org)
+Fast Nanopore read length/quality extractor.  
+**Détection automatique du format d'entrée : `.fastq` `.fastq.gz` `.bam`**
 
-Fast Nanopore FASTQ read length and mean quality extractor. Outputs are planned to be used with https://github.com/papaKarN/nano_stats.py
-Rust port of `Nano_Extract.V3.8.py` — **5 to 20× faster**, drop-in replacement, identical output format.
+Remplace à la fois `nano_extract v1.0.0` et `bam_extract`.
 
 ---
 
-## Features
+## Formats supportés
 
-- Supports `.fastq` and `.fastq.gz` input files
-- Native gzip decompression — no external `pigz` dependency
-- Multi-threaded quality computation via `rayon`
-- Identical CLI interface and TSV output to the original Python script
-- Progress bar with ETA
-- Processes multiple files in a single command
+| Format | Backend | Dépendance |
+|--------|---------|------------|
+| `.fastq` | Rust natif | aucune |
+| `.fastq.gz` | flate2/zlib-ng | aucune |
+| `.bam` | samtools subprocess | samtools |
 
----
-
-## Output format
-
-Tab-separated file with header:
-
-```
-read_id	length	mean_quality
-read1	15234	12.45
-read2	8901	14.20
-...
+Les fichiers peuvent être **mélangés** dans la même commande :
+```bash
+nano_extract -i reads.fastq.gz mapping.bam autre.fastq -o results
 ```
 
 ---
 
 ## Installation
 
-### Option 1 — Compile from source (recommended)
-
-**Prerequisites**
-
 ```bash
-# In your conda environment
-conda activate your_env
-conda install -c conda-forge rust cmake
-```
+conda activate nanostats
 
-**Compile**
+# Uniquement si tu utilises des fichiers BAM
+conda install -c bioconda samtools
 
-```bash
+# Compiler
+conda install -c conda-forge rust cmake   # si pas déjà installé
 git clone https://github.com/papaKarN/nano_extract
 cd nano_extract
 cargo build --release
-```
-
-**Install into conda environment**
-
-```bash
 cp target/release/nano_extract $CONDA_PREFIX/bin/
-```
-
-### Option 2 — Download prebuilt binary (Linux x86_64)
-
-Download the latest binary from the [Releases](https://github.com/papaKarN/nano_extract/releases) page.
-
-```bash
-chmod +x nano_extract
-cp nano_extract $CONDA_PREFIX/bin/
 ```
 
 ---
 
-## Usage
+## Utilisation
 
 ```bash
-# Single file
-nano_extract -i sample.fastq.gz -o length_quality
-
-# Multiple files
-nano_extract -i *.fastq.gz -o results
-
-# Control number of threads
+# FASTQ (identique à v1.0.0)
 nano_extract -i sample.fastq.gz -o results -t 8
 
-# Uncompressed input
-nano_extract -i sample.fastq -o results
+# BAM
+nano_extract -i sample.bam -o results -t 8
 
-# Custom chunk size
-nano_extract -i sample.fastq.gz -o results --chunk_size 100000
+# Fichiers mixtes
+nano_extract -i *.fastq.gz *.bam -o results -t 8
+
+# BAM — exclure les reads non mappés
+nano_extract -i sample.bam -o results --include_unmapped false
 ```
 
 ### Options
 
-| Option | Default | Description |
-|--------|---------|-------------|
-| `-i / --input` | required | Input FASTQ files (`.fastq` or `.fastq.gz`) |
-| `-o / --output` | `length_quality` | Output filename suffix |
-| `-t / --threads` | all CPUs | Threads for parallel processing |
-| `--chunk_size` | auto | Reads per chunk (50k < 1 GB, 200k ≥ 1 GB) |
+| Option | Défaut | Description |
+|--------|--------|-------------|
+| `-i / --input` | requis | Fichiers `.fastq`, `.fastq.gz`, `.fq`, `.fq.gz`, `.bam` |
+| `-o / --output` | `length_quality` | Suffixe du fichier de sortie |
+| `-t / --threads` | nb CPUs | Threads |
+| `--chunk_size` | auto | Reads par chunk (50k < 1 GB, 200k sinon) |
+| `--include_unmapped` | `true` | [BAM] Inclure les reads non mappés |
+| `--skip_secondary` | `true` | [BAM] Ignorer les alignements secondaires |
+| `--skip_supplementary` | `true` | [BAM] Ignorer les alignements supplémentaires |
 
 ---
 
-## Performance comparison
+## Format de sortie
 
-| Tool | 10 GB `.fastq.gz` | Notes |
-|------|-------------------|-------|
-| `Nano_Extract.V3.8.py` | ~8 min | pigz + multiprocessing |
-| `nano_extract` (Rust) | ~40 sec | flate2/zlib-ng + rayon |
+Identique pour tous les formats d'entrée :
 
-*Benchmarked on 16-core Linux workstation.*
-
----
-
-## Why faster?
-
-| Aspect | Python V3.8 | Rust v1.0 |
-|--------|-------------|-----------|
-| Gzip decompression | `pigz` (external process + IPC) | `flate2` native (zlib-ng) |
-| Parallelism | `multiprocessing.Pool` + pickle serialization | `rayon` (zero-copy threads) |
-| I/O | Python `open()` | `BufReader` with 4 MB buffer |
-| Quality computation | NumPy (Python overhead) | LLVM auto-vectorized SIMD |
-
----
-
-## Development
-
-```bash
-# Run tests
-cargo test
-
-# Check formatting
-cargo fmt --check
-
-# Lint
-cargo clippy
+```
+read_id	length	mean_quality
+read1	15234	12.45
+read2	8901	14.20
 ```
 
 ---
 
-## Python original
+## Tests
 
-The original Python script `Nano_Extract.V3.8.py` is included in this repository for reference.
+```bash
+cargo test
+```
 
 ---
 
 ## License
 
-MIT — see [LICENSE](LICENSE)
-
-
----
-
-## Acknowledgements
-
-I need to thank al my great colleagues @ PGTB https://pgtb.fr/ and INRAe
-I also want to thank [Claude ](https://claude.ai/) !
-
-
-
+MIT

@@ -1,28 +1,23 @@
 [package]
 name = "nano_extract"
-version = "1.0.0"
+version = "2.0.0"
 edition = "2021"
-description = "Fast Nanopore FASTQ length/quality extractor - Rust port of Nano_Extract V3.8"
+description = "Fast Nanopore read length/quality extractor — supports .fastq, .fastq.gz and .bam"
+authors = ["papaKarN"]
+license = "MIT"
+repository = "https://github.com/papaKarN/nano_extract"
+readme = "README.md"
+keywords = ["nanopore", "fastq", "bam", "bioinformatics", "sequencing"]
 
 [[bin]]
 name = "nano_extract"
 path = "src/main.rs"
 
 [dependencies]
-# CLI argument parsing
-clap = { version = "4", features = ["derive"] }
-
-# Parallel processing
-rayon = "1.10"
-
-# Gzip decompression (native, no external binary needed)
-flate2 = { version = "1.0", features = ["zlib-ng"], default-features = false }
-
-# Progress bar
+clap    = { version = "4", features = ["derive"] }
+rayon   = "1.10"
+flate2  = { version = "1.0", features = ["zlib-ng"], default-features = false }
 indicatif = "0.17"
-
-# Fast I/O
-memchr = "2"
 
 [profile.release]
 opt-level = 3

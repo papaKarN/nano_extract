@@ -1,3 +1,16 @@
+## [2.0.0] - 2025-03-10
+
+### Added
+- Auto-detection of input format (.fastq, .fastq.gz, .bam)
+- BAM support via samtools subprocess
+- Options --include_unmapped, --skip_secondary, --skip_supplementary
+- Mixed input files in a single command (fastq + bam together)
+
+### Changed
+- Version bump 1.0.0 → 2.0.0
+- Unified tool replaces both nano_extract and bam_extract
+
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
