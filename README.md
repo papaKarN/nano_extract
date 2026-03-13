@@ -159,9 +159,10 @@ The original Python script `Nano_Extract.V3.8.py` is included in this repository
 
 ## Acknowledgements
 
-- Original Python script developed at [your lab / institution]
+- Original Python script developed at [PGTB- UMR 1202 BioGeCo / INRAe]
 - Rust port assisted by [Claude](https://claude.ai) (Anthropic)
 - Built with [rayon](https://github.com/rayon-rs/rayon), [flate2](https://github.com/rust-lang/flate2-rs), [clap](https://github.com/clap-rs/clap), [indicatif](https://github.com/console-rs/indicatif)
+- Thnak you to all my great PGTB colleagues
 
 ---
 
