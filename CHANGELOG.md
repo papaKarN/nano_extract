@@ -1,3 +1,12 @@
+## [2.1.0] - 2026-03-13
+
+### Added
+- Output files are now compressed with pigz (.txt.gz)
+- pigz threads controlled by -t option
+- Error message at startup if pigz is missing and .gz input files are provided
+
+---
+
 ## [2.0.0] - 2025-03-10
 
 ### Added

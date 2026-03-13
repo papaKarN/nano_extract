@@ -1,6 +1,6 @@
 [package]
 name = "nano_extract"
-version = "2.0.0"
+version = "2.1.0"
 edition = "2021"
 description = "Fast Nanopore read length/quality extractor — supports .fastq, .fastq.gz and .bam"
 authors = ["papaKarN"]
